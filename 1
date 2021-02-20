@@ -1,0 +1,78 @@
+"""
+Case-study #4 Анализ текста
+Разработчики:
+Юдачев Н. 40%
+Кулешов Р. 20%
+Петров В. 20%
+"""
+from textblob import TextBlob
+text = input("Введите текст:")
+textn = text.split('.') + text.split('!') + text.split('?')
+textm = text.split(' ')
+count_sentens = (len(textn)-3)
+count_words = (len(textm))
+count_syllables = 0
+count_syllables_e = 0
+for i in text:
+    t = i.lower()
+    if t == 'а' or t == 'я' or t == 'о' or t == 'е' or t == 'ы' or t == 'и' or t == 'э' or t == 'ю' or t == 'ё' \
+            or t == 'у':
+        count_syllables += 1
+    if t == "a" or t == "e" or\
+       t == "i" or t == "o" or\
+       t == "u" or t == "y":
+        count_syllables_e += 1
+ASL = count_words/count_sentens
+ASW = count_syllables/count_words + count_syllables_e/count_words
+FRE = 206.835-(1.3*ASL)-(60.1*ASW)
+FRE_e = 206.835 - (1.015 * ASL) - (84.6 * ASW)
+print('Предложений:', count_sentens)
+print('Слов:', count_words)
+if count_syllables == 0:
+    print('Слогов:', count_syllables_e)
+    print('Средняя длина предложения в словах:', ASL)
+    print('Средняя длина слова в слогах:', ASW)
+    print('Индекс удобочитаемости Флеша:', FRE_e)
+    if FRE_e > 80:
+        print('Текст очень легко читается (для младших школьников).')
+    elif 80 <= FRE_e > 50:
+        print('Простой текст (для школьников).')
+    elif 50 <= FRE_e > 25:
+        print('Текст немного трудно читать (для студентов).')
+    elif 25 > FRE_e:
+        print('Текст трудно читается (для выпускников ВУЗов).')
+if count_syllables_e == 0:
+    print('Слогов:', count_syllables)
+    print('Средняя длина предложения в словах:', ASL)
+    print('Средняя длина слова в слогах:', ASW)
+    print('Индекс удобочитаемости Флеша:', FRE)
+    if FRE > 80:
+        print('Текст очень легко читается (для младших школьников).')
+    elif 80 <= FRE > 50:
+        print('Простой текст (для школьников).')
+    elif 50 <= FRE > 25:
+        print('Текст немного трудно читать (для студентов).')
+    elif 25 > FRE:
+        print('Текст трудно читается (для выпускников ВУЗов).')
+b = TextBlob(text)
+if b.detect_language() != 'en':
+    bn = b.translate(to='en')
+    analysisPol = TextBlob(str(bn)).polarity
+    analysisSub = TextBlob(str(bn)).subjectivity
+    if analysisPol > 0.33:
+        print('Тональность текста: положительная')
+    if 0.33 >= analysisPol > -0.33:
+        print('Тональность текста: нейтральный')
+    if -0.33 > analysisPol:
+        print('Тональность текста: отрицательная')
+    print('Объективность: ',(1 - analysisSub) * 100, '%', sep='')
+else:
+    analysisPol = TextBlob(text).polarity
+    analysisSub = TextBlob(text).subjectivity
+    if analysisPol > 0.33:
+        print('Тональность текста: положительная')
+    if 0.33 >= analysisPol > -0.33:
+        print('Тональность текста: нейтральный')
+    if -0.33 > analysisPol:
+        print('Тональность текста: отрицательная')
+    print('Объективность: ', (1-analysisSub)*100, '%', sep='')
